@@ -1,16 +1,37 @@
 package com.dauphine.blogger_box_backend.models;
 
-import java.util.ArrayList;
-import java.util.List;
+import jakarta.persistence.*;
+
+
+import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Entity
+@Table(name = "categoryuuid")
 public class Category {
-    private Long id;
-    private String name;
-    private List<Post> posts = new ArrayList<>();
+    @Id
+    @Column(name = "id")
+    private UUID id;
 
-    // Constructeurs
-    public Category(UUID uuid, String technology) {
+    @Column(name = "titre")
+    private String title;
+    @Column(name = "content")
+    private String content;
+    @Column(name = "created_date")
+    private LocalDateTime createdDate;
+    @Column(name = "id")
+
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
+
+    // Constructors
+    public Category() {
+        // JPA requires a no-arg constructor
+    }
+
+    public Category(String name) {
+        this.name = name;
     }
 
     public Category(Long id, String name) {
@@ -19,7 +40,7 @@ public class Category {
     }
 
     // Getters & Setters
-    public UUID getId() {
+    public Long getId() {
         return id;
     }
 
@@ -43,13 +64,15 @@ public class Category {
         this.posts = posts;
     }
 
-    // Méthodes utilitaires
+    // Utility methods
     public void addPost(Post post) {
         posts.add(post);
+        post.setCategory(this);
     }
 
     public void removePost(Post post) {
         posts.remove(post);
+        post.setCategory(null);
     }
 
     @Override
@@ -59,4 +82,4 @@ public class Category {
                 ", name='" + name + '\'' +
                 '}';
     }
-}
+}}
